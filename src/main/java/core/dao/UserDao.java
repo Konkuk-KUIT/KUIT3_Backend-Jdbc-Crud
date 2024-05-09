@@ -75,11 +75,11 @@ public class UserDao {
             pstmt = con.prepareStatement(sql);
             //pstmt.setString(1, userId);
             rs = pstmt.executeQuery();
-            if (rs.next()) {
+            while(rs.next()) {
                 users.add(new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                         rs.getString("email")));
             }
-            
+
         } finally {
             if (rs != null) {
                 rs.close();
