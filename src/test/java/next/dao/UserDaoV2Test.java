@@ -1,14 +1,18 @@
 package next.dao;
 
 import core.dao.UserDao;
+import core.dao.UserDaoV2;
 import core.jdbc.ConnectionManager;
 import core.model.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,22 +27,26 @@ public class UserDaoV2Test {
 
     @Test
     public void crud() throws Exception {
+        DataSource dataSource = ConnectionManager.getDataSource();
+
         User expected = new User("userId", "password", "김민우", "minunu12@email.com");
-        UserDao userDao = new UserDao();
-        userDao.insert(expected);
-        User actual = userDao.findByUserId(expected.getUserId());
+        UserDaoV2 userDaoV2 = new UserDaoV2(dataSource);
+        userDaoV2.insert(expected);
+        User actual = userDaoV2.findByUserId(expected.getUserId());
         assertEquals(expected, actual);
 
         expected.update(new User("userId", "password2", "고양이", "myamya@email.com"));
-        userDao.update(expected);
-        actual = userDao.findByUserId(expected.getUserId());
+        userDaoV2.update(expected);
+        actual = userDaoV2.findByUserId(expected.getUserId());
         assertEquals(expected, actual);
     }
 
     @Test
     public void findAll() throws Exception {
-        UserDao userDao = new UserDao();
-        List<User> users = userDao.findAll();
+        DataSource dataSource = ConnectionManager.getDataSource();
+
+        UserDaoV2 userDaoV2 = new UserDaoV2(dataSource);
+        List<User> users = userDaoV2.findAll();
         assertEquals(1, users.size());
     }
 }
