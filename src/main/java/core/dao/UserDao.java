@@ -11,24 +11,23 @@ import core.jdbc.ConnectionManager;
 import core.model.User;
 
 public class UserDao {
+
     public void insert(User user) throws SQLException {
         Connection con = null;
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "INSERT INTO USERS VALUES (?, ?, ?, ?)";
+            String sql = " insert into USERS (userId, password, name, email) values (?, ?, ?, ?) ";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, user.getUserId());
             pstmt.setString(2, user.getPassword());
             pstmt.setString(3, user.getName());
             pstmt.setString(4, user.getEmail());
-
             pstmt.executeUpdate();
         } finally {
             if (pstmt != null) {
                 pstmt.close();
             }
-
             if (con != null) {
                 con.close();
             }
@@ -40,20 +39,17 @@ public class UserDao {
         PreparedStatement pstmt = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = " update USERS set userId = ?, password = ?, name = ?, email = ?  where userId = ? ";
+            String sql = " update USERS set password = ?, name = ?, email = ?  where userId = ? ";
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, user.getUserId());
-            pstmt.setString(2, user.getPassword());
-            pstmt.setString(3, user.getName());
-            pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getUserId());
-
+            pstmt.setString(1, user.getPassword());
+            pstmt.setString(2, user.getName());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getUserId());
             pstmt.executeUpdate();
         } finally {
             if (pstmt != null) {
                 pstmt.close();
             }
-
             if (con != null) {
                 con.close();
             }
@@ -61,15 +57,14 @@ public class UserDao {
     }
 
     public List<User> findAll() throws SQLException {
-        ArrayList<User> userList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = " SELECT userId, password, name, email FROM USERS ";
+            String sql = " select userId, password, name, email from USERS ";
             pstmt = con.prepareStatement(sql);
-
             rs = pstmt.executeQuery();
 
             User user = null;
@@ -98,7 +93,7 @@ public class UserDao {
         ResultSet rs = null;
         try {
             con = ConnectionManager.getConnection();
-            String sql = "SELECT userId, password, name, email FROM USERS WHERE userid=?";
+            String sql = " select userId, password, name, email from USERS where userid = ?";
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, userId);
 
@@ -109,7 +104,6 @@ public class UserDao {
                 user = new User(rs.getString("userId"), rs.getString("password"), rs.getString("name"),
                         rs.getString("email"));
             }
-
             return user;
         } finally {
             if (rs != null) {
